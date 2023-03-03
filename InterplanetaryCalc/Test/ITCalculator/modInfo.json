@@ -1,0 +1,14 @@
+{
+  "mod_id": "ITCalculator",
+  "name": "Interplanetary Transfer Calculator",
+  "author": "ABritInSpace",
+  "description": "Plugin to help plan and execute interplanetary transfer eject burns.",
+  "source": "",
+  "version": "",
+  "dependencies": [
+  ],
+  "ksp2_version": {
+    "min": "...",
+    "max": "... (can be * for no max version)"
+  }
+}
