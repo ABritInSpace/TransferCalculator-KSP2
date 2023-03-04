@@ -169,8 +169,8 @@ namespace InterplanetaryCalc
             */
 
             VesselComponent ship = game.ViewController.GetActiveVehicle(true)?.GetSimVessel(true);
-            double eject = Mathf.Sqrt((2*(float)(cur.gravParameter)*((1/(float)ship.Orbit.semiMajorAxis)-(float)(1/cur.sphereOfInfluence))) + (float)(sunEject*sunEject));
-            eject -= Mathf.Sqrt((float)cur.gravParameter/(float)currentOrbit.semiMajorAxis);
+            double eject = Mathf.Sqrt((2*(float)(cur.gravParameter)*((1/(float)ship.Orbit.radius)-(float)(1/cur.sphereOfInfluence))) + (float)(sunEject*sunEject));
+            eject -= ship.Orbit.orbitalSpeed;
 
             return Math.Round(eject, 1);
         }
