@@ -4,7 +4,7 @@ An in-game interplanetary transfer calculator for KSP 2, including dV estimates 
 ## Install
 
 1. Download the [SpaceWarp mod loader](https://github.com/SpaceWarpDev/SpaceWarp) and install as follows.
-2. Drag the folder within the zip ("ICalculator") into KSP_ROOT/SpaceWarp/Mods
+2. Drag the folder within the zip ("ITCalculator") into KSP_ROOT/SpaceWarp/Mods
 3. Have fun! If there are any issues, contact me via discord (ABritInSpace#0752)
 
 ![Transfer Calculator GUI (including phase angle, current angle and estimated dV](https://github.com/ABritInSpace/TransferCalculator-KSP2/blob/master/transfercalc.png?raw=true)
