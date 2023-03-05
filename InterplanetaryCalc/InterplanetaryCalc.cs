@@ -1,39 +1,55 @@
 ﻿using System;
 using SpaceWarp.API.Mods;
-using SpaceWarp.API.AssetBundles;
+using SpaceWarp.API;
+using SpaceWarp;
+using SpaceWarp.API.UI.Appbar;
+using SpaceWarp.UI;
+using SpaceWarp.API.Game;
+using SpaceWarp.API.Assets;
+
 using UnityEngine.UI;
 using KSP;
+using KSP.Messages;
+using KSP.Sim.Definitions;
+using KSP.Sim.ResourceSystem;
 using UnityEngine;
 using I2.Loc;
 using KSP.Game;
 using KSP.Sim.impl;
 using KSP.Sim;
+using BepInEx;
+using SpaceWarp.API.UI;
+using KSP.UI.Binding;
+using JetBrains.Annotations;
+using MoonSharp.Interpreter.Interop.LuaStateInterop;
 
 namespace InterplanetaryCalc
 {
-    [MainMod]
-    public class InterplanetaryCalc : Mod
+    [BepInPlugin("com.github.ABritInSpace.InterplanetaryCalc", "InterplanetaryCalc", "0.1.3")]
+    [BepInDependency(SpaceWarpPlugin.ModGuid, SpaceWarpPlugin.ModVer)]
+
+    public class InterplanetaryCalcMod : BaseSpaceWarpPlugin
     {
+        private static InterplanetaryCalcMod Instance { get; set; }
         private Rect window;
-        private GUISkin _spaceWarpUISkin;
-        public override void Initialize()
-        {
-            base.Initialize();
-        }
+        private bool drawGUI = false;
+
         public override void OnInitialized()
         {
-            SpaceWarp.API.AssetBundles.ResourceManager.TryGetAsset(
-                $"space_warp/swconsoleui/swconsoleUI/spacewarpConsole.guiskin", out _spaceWarpUISkin);
             base.OnInitialized();
+            Instance = this;
         }
+
         void Awake()
         {
             window = new Rect((Screen.width)-400,130,350,50);
         }
-        void Update()
+        public override void OnPostInitialized()
         {
-
+            drawGUI = true;
         }
+
+
         void Populate(int winId)
         {
             GameInstance game = GameManager.Instance.Game;
@@ -86,11 +102,22 @@ namespace InterplanetaryCalc
         }
         void OnGUI()
         {
-            GameInstance game = GameManager.Instance.Game;
-            if (game.GlobalGameState.GetState() == GameState.Map3DView && game.ViewController.GetActiveVehicle(true) != null && game.ViewController.GetActiveVehicle(true).GetSimVessel(true).HasTargetObject)
+            if (drawGUI)
             {
-                GUI.skin = _spaceWarpUISkin;
-                window = GUILayout.Window(0, window, Populate, "Transfer Calculator", GUILayout.Width(350), GUILayout.Height(50));
+                GameInstance game = GameManager.Instance.Game;
+                if (game.GlobalGameState.GetState() == GameState.Map3DView && game.ViewController.GetActiveVehicle(true) != null && game.ViewController.GetActiveVehicle(true).GetSimVessel(true).HasTargetObject)
+                {
+                    GUI.skin = Skins.ConsoleSkin;
+                    window = GUILayout.Window(
+                        GUIUtility.GetControlID(FocusType.Passive),
+                        window,
+                        Populate,
+                        "Transfer Calculator",
+                        GUILayout.Width(350),
+                        GUILayout.Height(0)
+                    );
+
+                }
             }
         }
 
@@ -98,14 +125,12 @@ namespace InterplanetaryCalc
         {
             GameInstance game = GameManager.Instance.Game;
             SimulationObjectModel target = game.ViewController.GetActiveVehicle(true)?.GetSimVessel().TargetObject;
+            CelestialBodyComponent cur = game.ViewController.GetActiveVehicle(true)?.GetSimVessel().Orbit.referenceBody;
 
-            CelestialBodyComponent prev = game.ViewController.GetActiveVehicle(true)?.GetSimVessel().Orbit.referenceBody;
-            CelestialBodyComponent cur = prev;
             while (cur.Orbit.referenceBody.Name != target.Orbit.referenceBody.Name)
             {
-                prev = cur.Orbit.referenceBody;
+                cur = cur.Orbit.referenceBody;
             }
-            cur = prev;
 
             CelestialBodyComponent star = target.CelestialBody.GetRelevantStar();
             Vector3d to = star.coordinateSystem.ToLocalPosition(target.Position);
@@ -119,13 +144,12 @@ namespace InterplanetaryCalc
         {
             GameInstance game = GameManager.Instance.Game;
             SimulationObjectModel target = game.ViewController.GetActiveVehicle(true)?.GetSimVessel().TargetObject;
-            CelestialBodyComponent prev = game.ViewController.GetActiveVehicle(true)?.GetSimVessel().Orbit.referenceBody;
-            CelestialBodyComponent cur = prev;
+            CelestialBodyComponent cur = game.ViewController.GetActiveVehicle(true)?.GetSimVessel().Orbit.referenceBody;
+
             while (cur.Orbit.referenceBody.Name != target.Orbit.referenceBody.Name)
             {
-                prev = cur.Orbit.referenceBody;
+                cur = cur.Orbit.referenceBody;
             }
-            cur = prev;
 
             IKeplerOrbit targetOrbit = target.Orbit;
             IKeplerOrbit currentOrbit = cur.Orbit;
@@ -142,13 +166,12 @@ namespace InterplanetaryCalc
         {
             GameInstance game = GameManager.Instance.Game;
             SimulationObjectModel target = game.ViewController.GetActiveVehicle(true)?.GetSimVessel().TargetObject;
-            CelestialBodyComponent prev = game.ViewController.GetActiveVehicle(true)?.GetSimVessel().Orbit.referenceBody;
-            CelestialBodyComponent cur = prev;
+            CelestialBodyComponent cur = game.ViewController.GetActiveVehicle(true)?.GetSimVessel().Orbit.referenceBody;
+
             while (cur.Orbit.referenceBody.Name != target.Orbit.referenceBody.Name)
             {
-                prev = cur.Orbit.referenceBody;
+                cur = cur.Orbit.referenceBody;
             }
-            cur = prev;
 
             IKeplerOrbit targetOrbit = target.Orbit;
             IKeplerOrbit currentOrbit = cur.Orbit;
