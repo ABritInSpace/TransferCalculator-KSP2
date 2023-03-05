@@ -32,28 +32,24 @@ namespace InterplanetaryCalc
     {
         private static InterplanetaryCalcMod Instance { get; set; }
         private Rect window;
-        private static bool gamecheck = false;
-
+        private bool drawGUI = false;
 
         public override void OnInitialized()
         {
             base.OnInitialized();
             Instance = this;
-
-            if (Input.GetMouseButtonDown(1))
-            {
-                gamecheck = true;
-            }
         }
 
         void Awake()
         {
             window = new Rect((Screen.width)-400,130,350,50);
         }
-        void Update()
+        public override void OnPostInitialized()
         {
-            return;
+            drawGUI = true;
         }
+
+
         void Populate(int winId)
         {
             GameInstance game = GameManager.Instance.Game;
@@ -106,18 +102,18 @@ namespace InterplanetaryCalc
         }
         void OnGUI()
         {
-            if (gamecheck)
+            if (drawGUI)
             {
                 GameInstance game = GameManager.Instance.Game;
                 if (game.GlobalGameState.GetState() == GameState.Map3DView && game.ViewController.GetActiveVehicle(true) != null && game.ViewController.GetActiveVehicle(true).GetSimVessel(true).HasTargetObject)
                 {
                     GUI.skin = Skins.ConsoleSkin;
                     window = GUILayout.Window(
-                        GUIUtility.GetControlID(FocusType.Passive), 
-                        window, 
-                        Populate, 
-                        "Transfer Calculator", 
-                        GUILayout.Width(350), 
+                        GUIUtility.GetControlID(FocusType.Passive),
+                        window,
+                        Populate,
+                        "Transfer Calculator",
+                        GUILayout.Width(350),
                         GUILayout.Height(0)
                     );
 
