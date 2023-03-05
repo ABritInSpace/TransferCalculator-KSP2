@@ -1,6 +1,12 @@
 ﻿using System;
 using SpaceWarp.API.Mods;
-using SpaceWarp.API.AssetBundles;
+using SpaceWarp.API;
+using SpaceWarp;
+using SpaceWarp.API.UI.Appbar;
+using SpaceWarp.UI;
+using SpaceWarp.API.Game;
+using SpaceWarp.API.Assets;
+
 using UnityEngine.UI;
 using KSP;
 using UnityEngine;
@@ -8,27 +14,31 @@ using I2.Loc;
 using KSP.Game;
 using KSP.Sim.impl;
 using KSP.Sim;
+using BepInEx;
+using SpaceWarp.API.UI;
+using KSP.UI.Binding;
 
 namespace InterplanetaryCalc
 {
-    [MainMod]
-    public class InterplanetaryCalc : Mod
+    [BepInPlugin("com.github.ABritInSpace.InterplanetaryCalc", "InterplanetaryCalc", "0.1.3")]
+    [BepInDependency(SpaceWarpPlugin.ModGuid, SpaceWarpPlugin.ModVer)]
+
+    public class InterplanetaryCalcMod : BaseSpaceWarpPlugin
     {
+        private static InterplanetaryCalcMod Instance { get; set; }
+        private bool drawGUI = false;
+        
         private Rect window;
-        private GUISkin _spaceWarpUISkin;
-        public override void Initialize()
-        {
-            base.Initialize();
-        }
         public override void OnInitialized()
         {
-            SpaceWarp.API.AssetBundles.ResourceManager.TryGetAsset(
-                $"space_warp/swconsoleui/swconsoleUI/spacewarpConsole.guiskin", out _spaceWarpUISkin);
             base.OnInitialized();
+            Instance = this;
         }
+
         void Awake()
         {
             window = new Rect((Screen.width)-400,130,350,50);
+            drawGUI = true;
         }
         void Update()
         {
@@ -86,11 +96,22 @@ namespace InterplanetaryCalc
         }
         void OnGUI()
         {
-            GameInstance game = GameManager.Instance.Game;
-            if (game.GlobalGameState.GetState() == GameState.Map3DView && game.ViewController.GetActiveVehicle(true) != null && game.ViewController.GetActiveVehicle(true).GetSimVessel(true).HasTargetObject)
+            if (drawGUI)
             {
-                GUI.skin = _spaceWarpUISkin;
-                window = GUILayout.Window(0, window, Populate, "Transfer Calculator", GUILayout.Width(350), GUILayout.Height(50));
+                GameInstance game = GameManager.Instance.Game;
+                if (game.GlobalGameState.GetState() == GameState.Map3DView && game.ViewController.GetActiveVehicle(true) != null && game.ViewController.GetActiveVehicle(true).GetSimVessel(true).HasTargetObject)
+                {
+                    GUI.skin = Skins.ConsoleSkin;
+                    window = GUILayout.Window(
+                        GUIUtility.GetControlID(FocusType.Passive), 
+                        window, 
+                        Populate, 
+                        "Transfer Calculator", 
+                        GUILayout.Width(350), 
+                        GUILayout.Height(0)
+                    );
+
+                }
             }
         }
 
