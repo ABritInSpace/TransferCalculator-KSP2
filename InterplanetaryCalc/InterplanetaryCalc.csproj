@@ -23,6 +23,9 @@
 	<Reference Include="UnityEngine">
 	  <HintPath>..\external_dlls\UnityEngine.dll</HintPath>
 	</Reference>
+	<Reference Include="UnityEngine.InputLegacyModule">
+		<HintPath>..\external_dlls\UnityEngine.InputLegacyModule.dll</HintPath>
+	</Reference>
 	<PackageReference Include="BepInEx.BaseLib" Version="5.4.21" Publicize="true" />
   </ItemGroup>
 

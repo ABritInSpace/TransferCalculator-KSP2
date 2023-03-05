@@ -9,6 +9,9 @@ using SpaceWarp.API.Assets;
 
 using UnityEngine.UI;
 using KSP;
+using KSP.Messages;
+using KSP.Sim.Definitions;
+using KSP.Sim.ResourceSystem;
 using UnityEngine;
 using I2.Loc;
 using KSP.Game;
@@ -17,6 +20,8 @@ using KSP.Sim;
 using BepInEx;
 using SpaceWarp.API.UI;
 using KSP.UI.Binding;
+using JetBrains.Annotations;
+using MoonSharp.Interpreter.Interop.LuaStateInterop;
 
 namespace InterplanetaryCalc
 {
@@ -26,23 +31,28 @@ namespace InterplanetaryCalc
     public class InterplanetaryCalcMod : BaseSpaceWarpPlugin
     {
         private static InterplanetaryCalcMod Instance { get; set; }
-        private bool drawGUI = false;
-        
         private Rect window;
+        private static bool gamecheck = false;
+
+
         public override void OnInitialized()
         {
             base.OnInitialized();
             Instance = this;
+
+            if (Input.GetMouseButtonDown(1))
+            {
+                gamecheck = true;
+            }
         }
 
         void Awake()
         {
             window = new Rect((Screen.width)-400,130,350,50);
-            drawGUI = true;
         }
         void Update()
         {
-
+            return;
         }
         void Populate(int winId)
         {
@@ -96,7 +106,7 @@ namespace InterplanetaryCalc
         }
         void OnGUI()
         {
-            if (drawGUI)
+            if (gamecheck)
             {
                 GameInstance game = GameManager.Instance.Game;
                 if (game.GlobalGameState.GetState() == GameState.Map3DView && game.ViewController.GetActiveVehicle(true) != null && game.ViewController.GetActiveVehicle(true).GetSimVessel(true).HasTargetObject)
@@ -119,14 +129,12 @@ namespace InterplanetaryCalc
         {
             GameInstance game = GameManager.Instance.Game;
             SimulationObjectModel target = game.ViewController.GetActiveVehicle(true)?.GetSimVessel().TargetObject;
+            CelestialBodyComponent cur = game.ViewController.GetActiveVehicle(true)?.GetSimVessel().Orbit.referenceBody;
 
-            CelestialBodyComponent prev = game.ViewController.GetActiveVehicle(true)?.GetSimVessel().Orbit.referenceBody;
-            CelestialBodyComponent cur = prev;
             while (cur.Orbit.referenceBody.Name != target.Orbit.referenceBody.Name)
             {
-                prev = cur.Orbit.referenceBody;
+                cur = cur.Orbit.referenceBody;
             }
-            cur = prev;
 
             CelestialBodyComponent star = target.CelestialBody.GetRelevantStar();
             Vector3d to = star.coordinateSystem.ToLocalPosition(target.Position);
@@ -140,13 +148,12 @@ namespace InterplanetaryCalc
         {
             GameInstance game = GameManager.Instance.Game;
             SimulationObjectModel target = game.ViewController.GetActiveVehicle(true)?.GetSimVessel().TargetObject;
-            CelestialBodyComponent prev = game.ViewController.GetActiveVehicle(true)?.GetSimVessel().Orbit.referenceBody;
-            CelestialBodyComponent cur = prev;
+            CelestialBodyComponent cur = game.ViewController.GetActiveVehicle(true)?.GetSimVessel().Orbit.referenceBody;
+
             while (cur.Orbit.referenceBody.Name != target.Orbit.referenceBody.Name)
             {
-                prev = cur.Orbit.referenceBody;
+                cur = cur.Orbit.referenceBody;
             }
-            cur = prev;
 
             IKeplerOrbit targetOrbit = target.Orbit;
             IKeplerOrbit currentOrbit = cur.Orbit;
@@ -163,13 +170,12 @@ namespace InterplanetaryCalc
         {
             GameInstance game = GameManager.Instance.Game;
             SimulationObjectModel target = game.ViewController.GetActiveVehicle(true)?.GetSimVessel().TargetObject;
-            CelestialBodyComponent prev = game.ViewController.GetActiveVehicle(true)?.GetSimVessel().Orbit.referenceBody;
-            CelestialBodyComponent cur = prev;
+            CelestialBodyComponent cur = game.ViewController.GetActiveVehicle(true)?.GetSimVessel().Orbit.referenceBody;
+
             while (cur.Orbit.referenceBody.Name != target.Orbit.referenceBody.Name)
             {
-                prev = cur.Orbit.referenceBody;
+                cur = cur.Orbit.referenceBody;
             }
-            cur = prev;
 
             IKeplerOrbit targetOrbit = target.Orbit;
             IKeplerOrbit currentOrbit = cur.Orbit;
