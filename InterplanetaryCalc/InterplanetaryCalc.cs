@@ -33,6 +33,8 @@ namespace InterplanetaryCalc
         private static InterplanetaryCalcMod Instance { get; set; }
         private Rect window;
         private bool drawGUI = false;
+        private bool isWarping = false;
+        private bool prevWarp = false;
 
         public override void OnInitialized()
         {
@@ -49,6 +51,14 @@ namespace InterplanetaryCalc
             drawGUI = true;
         }
 
+        void Update()
+        {
+            if (isWarping)
+            {
+                isWarping = Warp(Phase(), Transfer());
+                prevWarp = isWarping;
+            }
+        }
 
         void Populate(int winId)
         {
@@ -64,7 +74,7 @@ namespace InterplanetaryCalc
             GUILayout.BeginHorizontal();
             GUILayout.Label("Target Planet:", GUILayout.Width(window.width / 2));
             //Populate rest of menu if target set
-            if (vessel.HasTargetObject && vessel.TargetObject.IsCelestialBody && vessel.TargetObject.Orbit.referenceBody.Name == "Kerbol")
+            if (vessel.HasTargetObject && vessel.TargetObject.IsCelestialBody && vessel.TargetObject.Orbit.referenceBody.Name == "Kerbol" && !isWarping)
             {
                 GUILayout.Label(game.ViewController.GetActiveVehicle(true)?.GetSimVessel(true)?.TargetObject.Name.ToString(), GUILayout.Width(175));
                 GUILayout.EndHorizontal();
@@ -88,12 +98,53 @@ namespace InterplanetaryCalc
                 GUILayout.Label("    - DeltaV for eject: ", GUILayout.Width(200));
                 GUILayout.Label(DeltaV().ToString(), GUILayout.Width(150));
                 GUILayout.EndHorizontal();
+                if (vessel.Orbit.referenceBody.Name != "Kerbol")
+                {
+                    GUILayout.BeginHorizontal();
+                    GUILayout.Label("          : Warp to transfer: ", GUILayout.Width(310));
+                    if (GUILayout.Button(">>", GUILayout.Width(40)) && !prevWarp)
+                        isWarping = true;
+                    GUILayout.EndHorizontal();
+                }
                 GUILayout.EndVertical();
             }
-            //Ignore and don't populate if no target
+            else if (isWarping)
+            {
+                GUILayout.Label(game.ViewController.GetActiveVehicle(true)?.GetSimVessel(true)?.TargetObject.Name.ToString(), GUILayout.Width(175));
+                GUILayout.EndHorizontal();
+                GUILayout.BeginHorizontal();
+                GUILayout.Label("", GUILayout.Width(350), GUILayout.Height(1));
+                Rect underline = GUILayoutUtility.GetLastRect();
+                underline.y += underline.height - 2;
+                underline.height = 2;
+                GUI.Box(underline, "");
+                GUILayout.EndHorizontal(); 
+                GUILayout.EndVertical();
+
+                GUILayout.BeginVertical();
+                GUILayout.BeginHorizontal();
+                GUILayout.Label("    - Current Phase Ang: ", GUILayout.Width(200));
+                GUILayout.Label(Phase().ToString(), GUILayout.Width(150));
+                GUILayout.EndHorizontal();
+                GUILayout.BeginHorizontal();
+                GUILayout.Label("    - Desired Phase Ang: ", GUILayout.Width(200));
+                GUILayout.Label(Transfer().ToString(), GUILayout.Width(150));
+                GUILayout.EndHorizontal();
+                GUILayout.BeginHorizontal();
+                GUILayout.Label("          : Warp to transfer: ", GUILayout.Width(310));
+                if (GUILayout.Button("<color=#FF0000>Stop</color>", GUILayout.Width(40)))
+                {
+                    isWarping = false;
+                    prevWarp = false;
+                    ForceStopWarp();
+                }
+                GUILayout.EndHorizontal();
+                GUILayout.EndVertical();
+            }
+            //Ignore and don't populate if no valid target
             else
             {
-                GUILayout.Label("None set", GUILayout.Width(175));
+                GUILayout.Label("No planet set", GUILayout.Width(175));
                 GUILayout.EndHorizontal();
                 GUILayout.EndVertical();
             }
@@ -112,7 +163,7 @@ namespace InterplanetaryCalc
                         GUIUtility.GetControlID(FocusType.Passive),
                         window,
                         Populate,
-                        "Transfer Calculator",
+                        "<color=#696DFF>// Transfer Window</color>",
                         GUILayout.Width(350),
                         GUILayout.Height(0)
                     );
@@ -127,9 +178,16 @@ namespace InterplanetaryCalc
             SimulationObjectModel target = game.ViewController.GetActiveVehicle(true)?.GetSimVessel().TargetObject;
             CelestialBodyComponent cur = game.ViewController.GetActiveVehicle(true)?.GetSimVessel().Orbit.referenceBody;
 
-            while (cur.Orbit.referenceBody.Name != target.Orbit.referenceBody.Name)
+            if (cur.Name != "Kerbol")
             {
-                cur = cur.Orbit.referenceBody;
+                while (cur.Orbit.referenceBody.Name != target.Orbit.referenceBody.Name)
+                {
+                    cur = cur.Orbit.referenceBody;
+                }
+            }
+            else
+            {
+                return 0;
             }
 
             CelestialBodyComponent star = target.CelestialBody.GetRelevantStar();
@@ -146,9 +204,16 @@ namespace InterplanetaryCalc
             SimulationObjectModel target = game.ViewController.GetActiveVehicle(true)?.GetSimVessel().TargetObject;
             CelestialBodyComponent cur = game.ViewController.GetActiveVehicle(true)?.GetSimVessel().Orbit.referenceBody;
 
-            while (cur.Orbit.referenceBody.Name != target.Orbit.referenceBody.Name)
+            if (cur.Name != "Kerbol")
             {
-                cur = cur.Orbit.referenceBody;
+                while (cur.Orbit.referenceBody.Name != target.Orbit.referenceBody.Name)
+                {
+                    cur = cur.Orbit.referenceBody;
+                }
+            }
+            else
+            {
+                return 0;
             }
 
             IKeplerOrbit targetOrbit = target.Orbit;
@@ -168,9 +233,16 @@ namespace InterplanetaryCalc
             SimulationObjectModel target = game.ViewController.GetActiveVehicle(true)?.GetSimVessel().TargetObject;
             CelestialBodyComponent cur = game.ViewController.GetActiveVehicle(true)?.GetSimVessel().Orbit.referenceBody;
 
-            while (cur.Orbit.referenceBody.Name != target.Orbit.referenceBody.Name)
+            if (cur.Name != "Kerbol")
             {
-                cur = cur.Orbit.referenceBody;
+                while (cur.Orbit.referenceBody.Name != target.Orbit.referenceBody.Name)
+                {
+                    cur = cur.Orbit.referenceBody;
+                }
+            }
+            else
+            {
+                return 0;
             }
 
             IKeplerOrbit targetOrbit = target.Orbit;
@@ -196,6 +268,48 @@ namespace InterplanetaryCalc
             eject -= ship.Orbit.orbitalSpeed;
 
             return Math.Round(eject, 1);
+        }
+
+        bool Warp(double current, double target)
+        {
+            GameInstance game = GameManager.Instance.Game;
+            current += 180;
+            target += 180;
+            double diff = 0;
+            diff = target > current ? target - current : current - target;
+            TimeWarp t = game.ViewController.TimeWarp;
+            if (diff >= 5)
+            {
+                bool phys;
+                if (t.CurrentRateIndex < t.GetMaxRateIndex(false, out phys))
+                {
+                    t.IncreaseTimeWarp();
+                }
+            }
+            else if (diff > 0.05)
+            {
+                bool phys;
+                if (t.CurrentRateIndex > t.GetMaxRateIndex(false, out phys) / 1.25)
+                {
+                    t.DecreaseTimeWarp();
+                }
+                else if (t.CurrentRateIndex < t.GetMaxRateIndex(false, out phys) / 1.25)
+                {
+                    t.IncreaseTimeWarp();
+                }
+            }
+            else
+            {
+                t.StopTimeWarp();
+                return false;
+            }
+            return true;
+        }
+
+        void ForceStopWarp ()
+        {
+            GameInstance game = GameManager.Instance.Game;
+            game.ViewController.TimeWarp.StopTimeWarp();
         }
     }
 }
