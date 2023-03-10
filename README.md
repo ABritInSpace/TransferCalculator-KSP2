@@ -1,4 +1,5 @@
-# ABrit's Transfer Calculator for KSP 2
+# Transfer Window for KSP 2
+##(Formerly ABrit's Transfer Calculator)
 An in-game interplanetary transfer calculator for KSP 2, including dV estimates and current/desired phase angles.
 
 ## Install
