@@ -224,7 +224,7 @@ namespace InterplanetaryCalc
             double transfer;
             
             transfer = 180 - ((time / targetOrbit.period) * 360);
-            if (transfer < -180) { transfer += 360; }
+            while (transfer < -180) {transfer += 360;}
             return Math.Round(transfer, 1);
         }
         double DeltaV()
