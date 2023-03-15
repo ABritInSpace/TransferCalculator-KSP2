@@ -2,6 +2,10 @@
 ## (Formerly ABrit's Transfer Calculator)
 An in-game interplanetary transfer calculator for KSP 2, including dV estimates and current/desired phase angles.
 
+- Phase angle: Your current phase angle between the planet you're orbiting and the target planet.
+- Target angle: The desired phase angle for the most optimal transfer.
+- Eject DeltaV: The estimated change in velocity required to get a transfer (does not include plane changes).
+
 ## Install
 
 1. Download [SpaceWarp](https://github.com/SpaceWarpDev/SpaceWarp) and install as follows
