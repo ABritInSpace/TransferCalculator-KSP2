@@ -365,3 +365,4 @@ FodyWeavers.xsd
 **/Test/
 external_dlls/*.dll
 InterplanetaryCalc/external_dlls
+output/
