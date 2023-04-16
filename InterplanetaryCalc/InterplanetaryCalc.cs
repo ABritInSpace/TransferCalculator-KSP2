@@ -69,7 +69,7 @@ namespace InterplanetaryCalc
 
         void Update()
         {
-            t = GameManager.Instance.Game.ViewController.TimeWarp;
+            t = GameManager.Instance?.Game?.ViewController?.TimeWarp;
             if (isWarping)
             {
                 isWarping = Warp(Phase(), Transfer());
@@ -156,7 +156,7 @@ namespace InterplanetaryCalc
                         GUIUtility.GetControlID(FocusType.Passive),
                         window,
                         Populate,
-                        "<color=#696DFF>// Transfer Window</color>",
+                        "<color=#696DFF>Transfer Window</color>",
                         GUILayout.Width(windowWidth),
                         GUILayout.Height(0)
                     );

@@ -8,11 +8,21 @@
     <Reference Include="Assembly-CSharp">
       <HintPath>..\external_dlls\Assembly-CSharp.dll</HintPath>
     </Reference>
+    <Reference Include="BepInEx">
+      <HintPath>..\external_dlls\BepInEx.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="Assembly-CSharp-firstpass">
       <HintPath>..\external_dlls\Assembly-CSharp-firstpass.dll</HintPath>
     </Reference>
-    <Reference Include="SpaceWarp">
-      <HintPath>..\external_dlls\SpaceWarp\core\SpaceWarp.dll</HintPath>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\external_dlls\Newtonsoft.Json.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="SpaceWarp, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\external_dlls\SpaceWarp.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.CoreModule">
       <HintPath>..\external_dlls\UnityEngine.CoreModule.dll</HintPath>
@@ -20,13 +30,12 @@
     <Reference Include="UnityEngine.IMGUIModule">
       <HintPath>..\external_dlls\UnityEngine.IMGUIModule.dll</HintPath>
     </Reference>
-	<Reference Include="UnityEngine">
-	  <HintPath>..\external_dlls\UnityEngine.dll</HintPath>
-	</Reference>
-	<Reference Include="UnityEngine.InputLegacyModule">
-		<HintPath>..\external_dlls\UnityEngine.InputLegacyModule.dll</HintPath>
-	</Reference>
-	<PackageReference Include="BepInEx.BaseLib" Version="5.4.21" Publicize="true" />
+    <Reference Include="UnityEngine">
+      <HintPath>..\external_dlls\UnityEngine.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.InputLegacyModule">
+      <HintPath>..\external_dlls\UnityEngine.InputLegacyModule.dll</HintPath>
+    </Reference>
+    <PackageReference Include="BepInEx.AssemblyPublicizer.MSBuild" Version="0.4.0" PrivateAssets="all" />
   </ItemGroup>
-
 </Project>
